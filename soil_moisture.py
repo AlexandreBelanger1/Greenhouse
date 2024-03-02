@@ -1,6 +1,6 @@
 
-#remember to activate the env environment before running this script
-
+#remember to activate the "env" environment before running this script
+#testing out github setup on my local machine
 
 import time
 import board
