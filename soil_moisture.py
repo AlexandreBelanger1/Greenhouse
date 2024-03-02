@@ -51,7 +51,7 @@ try:
         else:
             pump_control(False)  # Turn the pump OFF if soil is moist
             print("Soil is moist, turning pump OFF")
-
+        
         time.sleep(1)  # Need to decide the smapling frequency, right now it is smapling at 1000Hz
 
 except KeyboardInterrupt:
