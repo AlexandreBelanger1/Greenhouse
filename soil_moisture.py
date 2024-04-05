@@ -1,18 +1,4 @@
 
-# # import time
-# # import board
-# # from adafruit_seesaw.seesaw import Seesaw
-# # i2c_bus = board.I2C()
-
-# # ss = Seesaw(i2c_bus, addr=0x36)
-# # while True:
-# #  # read moisture level through capacitive touch pad
-# #  touch = ss.moisture_read()
-# #  # read temperature from the temperature sensor
-# #  temp = ss.get_temp()
-# #  print("temp: " + str(temp) + " moisture: " + str(touch))
-# #  time.sleep(1)
-
 # import board
 # import time
 # import RPi.GPIO as GPIO
@@ -91,11 +77,16 @@ def pump_control(turn_on):
     else:
         GPIO.output(pump_pin, False)  # Ensure the pump is off
 
+def read_sensor():
+    """Reads moisture and temperature from the sensor and returns them."""
+    moisture = ss.moisture_read()
+    temp = ss.get_temp()
+    return moisture, temp
+
 try:
     while True:
-        # Read moisture level and temperature
-        moisture = ss.moisture_read()
-        temp = ss.get_temp()
+        # Read moisture level and temperature from the sensor
+        moisture, temp = read_sensor()
         print(f"temp: {temp}, moisture: {moisture}")
 
         current_time = time.time()
