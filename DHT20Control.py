@@ -18,7 +18,7 @@ low_humid_thres = 35.0      # Humidity threshold
 try:
     while True:
         temp_air, humidity = read_data()
-        temp_soil, moisture = read_sensor()
+        moisture, temp_soil = read_sensor()
         temp = (temp_air + temp_soil)/2             #taking average of air and soil temperature
         
         if (temp != None) and (humidity != None):
