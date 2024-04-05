@@ -76,11 +76,16 @@ def pump_control(turn_on):
     else:
         GPIO.output(pump_pin, False)  # Ensure the pump is off
 
+def read_sensor():
+    """Reads moisture and temperature from the sensor and returns them."""
+    moisture = ss.moisture_read()
+    temp = ss.get_temp()
+    return moisture, temp
+
 try:
     while True:
-        # Read moisture level and temperature
-        moisture = ss.moisture_read()
-        temp = ss.get_temp()
+        # Read moisture level and temperature from the sensor
+        moisture, temp = read_sensor()
         print(f"temp: {temp}, moisture: {moisture}")
 
         current_time = time.time()

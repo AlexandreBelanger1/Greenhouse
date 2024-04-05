@@ -1,6 +1,7 @@
 import RPi.GPIO as GPIO
 import time
 from DHT20Script import read_data
+from soil_moisture import read_sensor
 
 GPIO.setmode(GPIO.BCM)
 
@@ -8,14 +9,21 @@ Fan_Control = 16            # GPIO pin for controlling the heating lamp
 Heating_Lamp_Control = 20   # GPIO pin for controlling the heating lamp
 Humidifer_Control = 26      # GPIO pin for controlling the humidifier
 
-high_temp_thres = 26.0  # Higher Temperature threshold
-low_temp_thres = 20.0       # Lower Temperature threshold
-humid_thres = 42.0      # Humidity threshold
+high_temp_thres = 24.0  # Higher Temperature threshold
+low_temp_thres = 20.5   # Lower Temperature threshold
+high_humid_thres = 60.0     # Humidity threshold
+low_humid_thres = 35.0      # Humidity threshold
+
 
 try:
     while True:
-        temp, humidity = read_data()
+        temp_air, humidity = read_data()
+        temp_soil, moisture = read_sensor()
+        temp = (temp_air + temp_soil)/2             #taking average of air and soil temperature
+        
         if (temp != None) and (humidity != None):
+
+            #Logic for controlling temperature
             if temp > high_temp_thres:
                 GPIO.output(Fan_Control, GPIO.HIGH)
                 print(f"High Temp Detected {temp} C, Fan turned on")
@@ -27,11 +35,18 @@ try:
                 print(f"Low Temp Detected {temp} C, Heating Lamp turned on")
             else:
                 GPIO.output(Heating_Lamp_Control, GPIO.LOW)
-            if humidity < humid_thres:
-                GPIO.output(humid_led, GPIO.HIGH)
-                print(f"Low Humidity warning {humidity}%, turning on Blue LED")
+
+            #Logic for controlling humidity
+            if humidity < low_humid_thres:
+                GPIO.output(Humidifer_Control, GPIO.HIGH)
+                print(f"Low Humidity warning {humidity}%, turning on Humidifier")
             else:
-                GPIO.output(humid_led, GPIO.LOW)
+                GPIO.output(Humidifer_Control, GPIO.LOW)
+            if humidity > high_humid_thres:
+                GPIO.output(Fan_Control, GPIO.HIGH)
+                print(f"High Humidity warning {humidity}%, turning on Fan")
+            else:
+                GPIO.output(Fan_Control, GPIO.LOW)
         else:
             print("failed to read data from sensor")
 
